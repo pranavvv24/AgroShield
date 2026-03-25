@@ -4,13 +4,13 @@ Calculates the insurance premium with risk-based adjustments.
 
 Rules:
   • Base premium  = ₹500
-  • +20 % for high-risk crops   (cotton, sugarcane)
-  • +30 % for risky locations   (flood_prone, arid, coastal)
-  • −20 % when pool_size >= 5   (large-pool discount)
+  • +20 % for crops            (rice, cotton)
+  • +30 % for locations        (drought-prone)
+  • −20 % when pool_size > 3   (large-pool discount)
 """
 
-HIGH_RISK_CROPS = {"cotton", "sugarcane"}
-RISKY_LOCATIONS = {"flood_prone", "arid", "coastal"}
+HIGH_RISK_CROPS = {"rice", "cotton"}
+DROUGHT_PRONE_LOCATIONS = {"drought_prone"}
 
 BASE_PREMIUM = 500
 
@@ -39,14 +39,15 @@ def calculate_premium(
     if crop.lower() in HIGH_RISK_CROPS:
         crop_risk = premium * 0.20
 
-    # +30 % for risky locations
-    if location.lower().replace(" ", "_") in RISKY_LOCATIONS:
+    # +30 % for drought-prone locations
+    loc_key = location.lower().strip().replace(" ", "_").replace("-", "_")
+    if loc_key in DROUGHT_PRONE_LOCATIONS:
         location_risk = premium * 0.30
 
     subtotal = premium + crop_risk + location_risk
 
     # −20 % for large pools
-    if pool_size >= 5:
+    if pool_size > 3:
         pool_discount = -(subtotal * 0.20)
 
     final = round(subtotal + pool_discount, 2)

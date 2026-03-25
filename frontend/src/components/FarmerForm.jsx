@@ -30,7 +30,7 @@ export default function FarmerForm({ onFarmerAdded }) {
         longitude: (Math.random() * 360 - 180).toFixed(4), // dummy lon
       };
 
-      const response = await fetch('http://127.0.0.1:5000/create-farmer', {
+      const response = await fetch('/create-farmer', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)

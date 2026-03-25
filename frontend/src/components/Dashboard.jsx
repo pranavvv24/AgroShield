@@ -13,7 +13,7 @@ export default function Dashboard({ refreshTrigger }) {
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      const res = await fetch('http://127.0.0.1:5000/dashboard');
+      const res = await fetch('/dashboard');
       if (!res.ok) throw new Error('Failed to fetch dashboard data');
       const json = await res.json();
       setData(json);
@@ -28,8 +28,9 @@ export default function Dashboard({ refreshTrigger }) {
     try {
       if (!data?.farmers?.length) return alert('No farmers to simulate weather for.');
       const firstFarmer = data.farmers[0];
-      const res = await fetch(`http://127.0.0.1:5000/weather?lat=${firstFarmer.latitude}&lon=${firstFarmer.longitude}`);
+      const res = await fetch(`/weather?lat=${firstFarmer.latitude}&lon=${firstFarmer.longitude}`);
       const d = await res.json();
+      if (!res.ok) throw new Error(d?.error || 'Weather request failed');
       alert(`Weather simulation complete!\n\nTriggered: ${d.weather.triggered}\nRainfall: ${d.weather.rainfall_mm}mm\nTemperature: ${d.weather.temperature_c}°C`);
       fetchDashboardData();
     } catch (err) {
@@ -43,11 +44,13 @@ export default function Dashboard({ refreshTrigger }) {
       
       let processed = 0;
       for (const farmer of data.farmers) {
-        await fetch('http://127.0.0.1:5000/payout', { 
+        const res = await fetch('/payout', { 
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ farmer_id: farmer.id })
         });
+        const d = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(d?.error || 'Payout request failed');
         processed++;
       }
       alert(`Payout processing complete for ${processed} farmers!`);
@@ -132,6 +135,8 @@ export default function Dashboard({ refreshTrigger }) {
                 <th style={{ padding: '1rem 0.75rem', fontWeight: 600, fontSize: '0.875rem' }}>Pool ID</th>
                 <th style={{ padding: '1rem 0.75rem', fontWeight: 600, fontSize: '0.875rem' }}>Premium</th>
                 <th style={{ padding: '1rem 0.75rem', fontWeight: 600, fontSize: '0.875rem' }}>Payout</th>
+                <th style={{ padding: '1rem 0.75rem', fontWeight: 600, fontSize: '0.875rem' }}>Status</th>
+                <th style={{ padding: '1rem 0.75rem', fontWeight: 600, fontSize: '0.875rem' }}>Details</th>
               </tr>
             </thead>
             <tbody>
@@ -149,18 +154,31 @@ export default function Dashboard({ refreshTrigger }) {
                     </span>
                   </td>
                   <td style={{ padding: '1rem 0.75rem', fontFamily: 'monospace', fontSize: '0.875rem' }}>{farmer.pool_id || 'Pending'}</td>
-                  <td style={{ padding: '1rem 0.75rem', fontWeight: '500' }}>${(farmer.premium || 0).toFixed(2)}</td>
+                  <td style={{ padding: '1rem 0.75rem', fontWeight: '500' }}>{Number(farmer.premium || 0).toFixed(2)}</td>
                   <td style={{ padding: '1rem 0.75rem' }}>
-                    {(farmer.payout > 0) ? (
-                       <span className="badge badge-success">Paid ${(farmer.payout).toFixed(2)}</span>
+                    {(Number(farmer.payout || 0) > 0) ? (
+                      <span className="badge badge-success">5000</span>
                     ) : (
-                       <span className="badge badge-neutral">Insured</span>
+                      <span className="badge badge-neutral">0</span>
                     )}
+                  </td>
+                  <td style={{ padding: '1rem 0.75rem' }}>
+                    <span className={`badge badge-${farmer.status === 'Paid' ? 'success' : (farmer.status === 'No Payout' ? 'neutral' : 'primary')}`}>
+                      {farmer.status || 'active'}
+                    </span>
+                  </td>
+                  <td style={{ padding: '1rem 0.75rem', maxWidth: '360px' }}>
+                    <details>
+                      <summary style={{ cursor: 'pointer', color: 'var(--primary)' }}>View</summary>
+                      <pre style={{ marginTop: '0.75rem', whiteSpace: 'pre-wrap', wordBreak: 'break-word', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                        {JSON.stringify(farmer, null, 2)}
+                      </pre>
+                    </details>
                   </td>
                 </tr>
               )) : (
                 <tr>
-                  <td colSpan="8" style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>No farmers registered yet.</td>
+                  <td colSpan="10" style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>No farmers registered yet.</td>
                 </tr>
               )}
             </tbody>
@@ -179,6 +197,18 @@ export default function Dashboard({ refreshTrigger }) {
             
             <div className="text-muted mb-4 text-sm flex gap-2" style={{ alignItems: 'center' }}>
               <ShieldCheck size={16} className="text-success inline-block" /> Active Coverage
+            </div>
+
+            <div className="text-sm" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              <div><span className="text-muted">Crops:</span> {Array.isArray(pool.crops) ? pool.crops.join(', ') : 'N/A'}</div>
+              <div><span className="text-muted">Locations:</span> {Array.isArray(pool.locations) ? pool.locations.join(', ') : 'N/A'}</div>
+              <div><span className="text-muted">Members:</span> {Array.isArray(pool.members) ? pool.members.join(', ') : 'N/A'}</div>
+              <details>
+                <summary style={{ cursor: 'pointer', color: 'var(--primary)' }}>Raw pool JSON</summary>
+                <pre style={{ marginTop: '0.75rem', whiteSpace: 'pre-wrap', wordBreak: 'break-word', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                  {JSON.stringify(pool, null, 2)}
+                </pre>
+              </details>
             </div>
 
             <div className="flex-between pt-3" style={{ borderTop: '1px solid var(--border)', marginTop: 'auto' }}>
