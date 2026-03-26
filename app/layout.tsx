@@ -9,7 +9,8 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "AgroShield - Crop Insurance Platform",
-  description: "Decentralized crop insurance for farmers with weather-based risk pooling",
+  description:
+    "Decentralized crop insurance for farmers with weather-based risk pooling",
 }
 
 export const viewport: Viewport = {
