@@ -6,7 +6,7 @@ import {
   BarChart3, Gauge, Home, LayoutDashboard, Settings,
   Bot, CloudRain, CreditCard, Calculator
 } from 'lucide-react';
-import { DUMMY_DATA, fetchWithFallback, API_ENDPOINTS } from '../config/api.config';
+import { DUMMY_DATA, fetchWithFallback, API_ENDPOINTS } from '../config/api';
 
 export default function AdminPage() {
   const [loading, setLoading] = useState(true);

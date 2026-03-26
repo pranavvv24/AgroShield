@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { ShieldCheck, User, Phone, MapPin, Sprout, Ruler, AlertTriangle, Loader2 } from 'lucide-react';
-import { API_ENDPOINTS } from '../config/api.config';
+import { API_ENDPOINTS } from '../config/api';
 
 export default function RegisterPage() {
   const navigate = useNavigate();

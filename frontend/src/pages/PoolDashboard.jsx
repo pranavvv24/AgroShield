@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { Users, IndianRupee, PiggyBank, CloudRain, MapPin, Sprout, Calendar } from 'lucide-react';
-import { DUMMY_DATA, fetchWithFallback, API_ENDPOINTS } from '../config/api.config';
+import { DUMMY_DATA, fetchWithFallback, API_ENDPOINTS } from '../config/api';
 
 export default function PoolDashboard() {
   const [loading, setLoading] = useState(true);

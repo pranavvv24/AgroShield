@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { ShieldCheck, IndianRupee, CloudRain, CreditCard, Droplets, Users, MapPin, Sprout } from 'lucide-react';
-import { DUMMY_DATA, fetchWithFallback, API_ENDPOINTS } from '../config/api.config';
+import { DUMMY_DATA, fetchWithFallback, API_ENDPOINTS } from '../config/api';
 
 export default function FarmerDashboard() {
   const navigate = useNavigate();
