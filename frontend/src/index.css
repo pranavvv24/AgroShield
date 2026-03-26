@@ -223,7 +223,71 @@ h1, h2, h3, h4, h5, h6 {
 
 .mt-2 { margin-top: 0.5rem; }
 .mt-4 { margin-top: 1rem; }
+.mt-8 { margin-top: 2rem; }
 .mb-2 { margin-bottom: 0.5rem; }
 .mb-4 { margin-bottom: 1rem; }
 .mb-6 { margin-bottom: 1.5rem; }
 .mb-8 { margin-bottom: 2rem; }
+
+/* Badge primary variant */
+.badge-primary { background: #dbeafe; color: #1e40af; }
+
+/* Text utilities */
+.text-sm { font-size: 0.875rem; }
+.text-muted { color: var(--text-muted); }
+.font-semibold { font-weight: 600; }
+
+/* Additional utility classes */
+.text-center { text-align: center; }
+.min-h-screen { min-height: 100vh; }
+
+/* Smooth page transitions */
+.page-transition {
+  animation: pageIn 0.3s ease-out;
+}
+
+@keyframes pageIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Mobile responsive improvements */
+@media (max-width: 480px) {
+  .container {
+    padding: 1rem 0.75rem;
+  }
+  
+  .card {
+    padding: 1.25rem;
+    border-radius: 16px;
+  }
+  
+  .card-value {
+    font-size: 1.5rem;
+  }
+}
+
+/* Scrollbar styling for dark mode sections */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #475569;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
